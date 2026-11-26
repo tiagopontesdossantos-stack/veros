@@ -2,26 +2,9 @@
   "version": "7",
   "dialect": "postgresql",
   "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1795272535355,
-      "tag": "0000_migration",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1795273597142,
-      "tag": "0001_tighten_diagnostic_insert_policy",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1795658014789,
-      "tag": "0002_veros_admin_meeting_intelligence",
-      "breakpoints": true
-    }
+    { "idx": 0, "version": "7", "when": 1795272535355, "tag": "0000_migration", "breakpoints": true },
+    { "idx": 1, "version": "7", "when": 1795273597142, "tag": "0001_tighten_diagnostic_insert_policy", "breakpoints": true },
+    { "idx": 2, "version": "7", "when": 1795658014789, "tag": "0002_veros_admin_meeting_intelligence", "breakpoints": true },
+    { "idx": 3, "version": "7", "when": 1795700000000, "tag": "0003_organizations_security_audit", "breakpoints": true }
   ]
 }
