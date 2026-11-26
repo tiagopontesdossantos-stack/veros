@@ -9,8 +9,23 @@ import { ShieldAlert } from "lucide-react";
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/auth" });
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) throw redirect({ to: "/auth" });
+
+    const { data: roles, error: rolesError } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id);
+    if (rolesError || !roles?.length) throw redirect({ to: "/auth" });
+
+    if (roles.some((item) => item.role === "admin")) {
+      const { data: assurance, error: assuranceError } =
+        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (assuranceError || assurance.currentLevel !== "aal2") {
+        throw redirect({ to: "/auth" });
+      }
+    }
+
     return { user: data.user };
   },
   component: AdminLayout,
@@ -47,7 +62,7 @@ function AdminLayout() {
           <ShieldAlert className="mx-auto h-10 w-10 text-cyan" />
           <h1 className="mt-4 font-display text-xl font-semibold">Acesso pendente</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Sua conta ({user.email}) ainda não foi autorizada para o VEROS Admin. Peça a um administrador da VEROS para liberar o seu acesso.
+            Sua conta ({user.email}) ainda não foi autorizada. Peça a um administrador da VEROS para liberar o seu acesso.
           </p>
           <Button variant="outline" className="mt-6" onClick={signOut}>Sair</Button>
         </div>
