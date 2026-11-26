@@ -36,7 +36,7 @@ const groups: { label: string; items: Item[] }[] = [
   { label: "Configurações", items: [{ title: "Configurações", icon: Settings, to: "/admin/configuracoes" }] },
 ];
 
-export function AdminSidebar({ email, onSignOut }: { email: string; onSignOut: () => void }) {
+export function AdminSidebar({ email, onSignOut }: { email: string; onSignOut?: () => void }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const loc = useRouterState({ select: (r) => ({ path: r.location.pathname, search: r.location.search as Record<string, unknown> }) });
@@ -85,14 +85,19 @@ export function AdminSidebar({ email, onSignOut }: { email: string; onSignOut: (
       </SidebarContent>
       <SidebarFooter>
         {!collapsed && <p className="truncate px-2 text-xs text-muted-foreground">{email}</p>}
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={onSignOut} tooltip="Sair">
-              <LogOut className="h-4 w-4" />
-              {!collapsed && <span>Sair</span>}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        {onSignOut && (
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={onSignOut} tooltip="Sair">
+                <LogOut className="h-4 w-4" />
+                {!collapsed && <span>Sair</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
+        {!onSignOut && !collapsed && (
+          <p className="px-2 pb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Acesso temporário</p>
+        )}
       </SidebarFooter>
     </Sidebar>
   );

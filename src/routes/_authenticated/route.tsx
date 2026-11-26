@@ -1,83 +1,23 @@
-import { createFileRoute, Outlet, redirect, useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { Button } from "@/components/ui/button";
-import { ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-
-    const { data: roles, error: rolesError } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", data.user.id);
-    if (rolesError || !roles?.length) throw redirect({ to: "/auth" });
-
-    if (roles.some((item) => item.role === "admin")) {
-      const { data: assurance, error: assuranceError } =
-        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-      if (assuranceError || assurance.currentLevel !== "aal2") {
-        throw redirect({ to: "/auth" });
-      }
-    }
-
-    return { user: data.user };
-  },
+  // Temporariamente, o ambiente interno abre em modo de visualização sem autenticação.
+  // As políticas RLS do Supabase continuam sendo aplicadas aos dados.
   component: AdminLayout,
 });
 
 function AdminLayout() {
-  const { user } = Route.useRouteContext();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const roles = useQuery({
-    queryKey: ["my-roles", user.id],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
-      if (error) throw error;
-      return data.map((r) => r.role);
-    },
-  });
-
-  async function signOut() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
-  }
-
-  if (roles.isLoading) {
-    return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Carregando…</div>;
-  }
-
-  if (!roles.data || roles.data.length === 0) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4">
-        <div className="max-w-md rounded-xl border bg-card p-8 text-center">
-          <ShieldAlert className="mx-auto h-10 w-10 text-cyan" />
-          <h1 className="mt-4 font-display text-xl font-semibold">Acesso pendente</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sua conta ({user.email}) ainda não foi autorizada. Peça a um administrador da VEROS para liberar o seu acesso.
-          </p>
-          <Button variant="outline" className="mt-6" onClick={signOut}>Sair</Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
-        <AdminSidebar email={user.email ?? ""} onSignOut={signOut} />
+        <AdminSidebar email="Modo de visualização" />
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur">
             <SidebarTrigger />
-            <span className="font-display text-sm font-semibold tracking-wide text-muted-foreground">VEROS Admin</span>
+            <span className="font-display text-sm font-semibold tracking-wide text-muted-foreground">VEROS Admin · Pré-visualização</span>
           </header>
           <main className="flex-1 p-4 md:p-8">
             <Outlet />
