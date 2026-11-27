@@ -491,6 +491,8 @@ export type Database = {
       business_metrics: WorkspaceTable<{ id: string; organization_id: string; name: string; metric_key: string; value: number; unit: string; period_start: string; period_end: string; target: number | null; notes: string | null; client_visible: boolean; created_by: string | null; created_at: string; updated_at: string }>
       commercial_proposals: WorkspaceTable<{ id: string; organization_id: string; prospect_id: string | null; opportunity_id: string | null; title: string; service_type: string; status: string; amount: number; valid_until: string | null; scope: Json; terms: string | null; sent_at: string | null; decided_at: string | null; created_by: string | null; created_at: string; updated_at: string }>
       report_schedules: WorkspaceTable<{ id: string; organization_id: string; meeting_id: string | null; project_id: string | null; frequency: string; next_run_at: string | null; is_active: boolean; created_by: string | null; created_at: string }>
+      organizations: WorkspaceTable<{ id: string; name: string; slug: string; organization_type: string; status: string; created_at: string; updated_at: string }>,
+      organization_memberships: WorkspaceTable<{ id: string; organization_id: string; user_id: string; role: string; invited_by: string | null; created_at: string }>,
     Views: {
       [_ in never]: never
     }
