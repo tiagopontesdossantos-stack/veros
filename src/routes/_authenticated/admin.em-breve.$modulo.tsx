@@ -2,13 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import { ArrowRight, BriefcaseBusiness, ChartNoAxesCombined, CircleDollarSign, FileText, FolderKanban, Plus, Users, Wallet } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, adminHead } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { money, dateTime, show } from "@/lib/admin-data";
 
 export const Route = createFileRoute("/_authenticated/admin/em-breve/$modulo")({
