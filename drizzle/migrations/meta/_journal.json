@@ -36,6 +36,13 @@
       "when": 1795701000000,
       "tag": "0004_admin_mfa_enforcement",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795792858843,
+      "tag": "0005_workspace_modules",
+      "breakpoints": true
     }
   ]
 }
