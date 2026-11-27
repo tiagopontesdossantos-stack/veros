@@ -158,7 +158,7 @@ function ProjectsModule() {
       e.preventDefault();
       const cleanName = clientName.trim();
       if (!cleanName) throw new Error("Informe o nome do cliente.");
-      const slug = cleanName.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const slug = cleanName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       const { data, error } = await supabase.from("organizations").insert({ name: cleanName, slug, organization_type: "client" }).select("id").single();
       if (error) throw error;
       return data.id;
