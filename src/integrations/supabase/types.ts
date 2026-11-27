@@ -478,7 +478,7 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
-      }
+      },
       crm_pipelines: WorkspaceTable<{ id: string; organization_id: string; name: string; is_default: boolean; created_at: string }>,
       crm_stages: WorkspaceTable<{ id: string; pipeline_id: string; name: string; position: number; probability: number; is_won: boolean; is_lost: boolean }>,
       crm_opportunities: WorkspaceTable<{ id: string; organization_id: string; pipeline_id: string; stage_id: string; prospect_id: string | null; title: string; amount: number; expected_close_date: string | null; owner_id: string | null; source: string | null; lost_reason: string | null; next_activity_at: string | null; created_at: string; updated_at: string }>,
