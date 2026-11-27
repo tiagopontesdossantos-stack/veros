@@ -6,6 +6,8 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+type WorkspaceTable<Row> = { Row: Row; Insert: Partial<Row>; Update: Partial<Row>; Relationships: [] };
+
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -476,7 +478,20 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
-      }
+      },
+      crm_pipelines: WorkspaceTable<{ id: string; organization_id: string; name: string; is_default: boolean; created_at: string }>,
+      crm_stages: WorkspaceTable<{ id: string; pipeline_id: string; name: string; position: number; probability: number; is_won: boolean; is_lost: boolean }>,
+      crm_opportunities: WorkspaceTable<{ id: string; organization_id: string; pipeline_id: string; stage_id: string; prospect_id: string | null; title: string; amount: number; expected_close_date: string | null; owner_id: string | null; source: string | null; lost_reason: string | null; next_activity_at: string | null; created_at: string; updated_at: string }>,
+      crm_activities: WorkspaceTable<{ id: string; organization_id: string; prospect_id: string | null; opportunity_id: string | null; project_id: string | null; title: string; description: string | null; activity_type: string; status: string; due_at: string | null; completed_at: string | null; owner_id: string | null; created_at: string; updated_at: string }>,
+      client_projects: WorkspaceTable<{ id: string; organization_id: string; client_organization_id: string; name: string; description: string | null; service_type: string; status: string; progress: number; start_date: string | null; target_end_date: string | null; completed_at: string | null; client_visible: boolean; created_by: string | null; created_at: string; updated_at: string }>,
+      project_milestones: WorkspaceTable<{ id: string; project_id: string; title: string; description: string | null; status: string; due_date: string | null; position: number; client_visible: boolean; completed_at: string | null; created_at: string; updated_at: string }>,
+      project_updates: WorkspaceTable<{ id: string; project_id: string; title: string; content: string; progress: number | null; client_visible: boolean; published_at: string | null; created_by: string | null; created_at: string }>,
+      finance_entries: WorkspaceTable<{ id: string; organization_id: string; project_id: string | null; entry_type: string; category: string; description: string; amount: number; due_date: string; paid_at: string | null; status: string; payment_method: string | null; reference_month: string | null; notes: string | null; created_by: string | null; created_at: string; updated_at: string }>,
+      business_metrics: WorkspaceTable<{ id: string; organization_id: string; name: string; metric_key: string; value: number; unit: string; period_start: string; period_end: string; target: number | null; notes: string | null; client_visible: boolean; created_by: string | null; created_at: string; updated_at: string }>,
+      commercial_proposals: WorkspaceTable<{ id: string; organization_id: string; prospect_id: string | null; opportunity_id: string | null; title: string; service_type: string; status: string; amount: number; valid_until: string | null; scope: Json; terms: string | null; sent_at: string | null; decided_at: string | null; created_by: string | null; created_at: string; updated_at: string }>,
+      report_schedules: WorkspaceTable<{ id: string; organization_id: string; meeting_id: string | null; project_id: string | null; frequency: string; next_run_at: string | null; is_active: boolean; created_by: string | null; created_at: string }>,
+      organizations: WorkspaceTable<{ id: string; name: string; slug: string; organization_type: string; status: string; created_at: string; updated_at: string }>,
+      organization_memberships: WorkspaceTable<{ id: string; organization_id: string; user_id: string; role: string; invited_by: string | null; created_at: string }>,
     }
     Views: {
       [_ in never]: never

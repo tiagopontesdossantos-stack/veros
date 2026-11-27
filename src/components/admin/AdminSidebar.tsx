@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, PlusCircle, History, Timer, CheckCircle2, FileText, ListTree,
-  Building2, Users, FolderKanban, Wallet, Settings, LogOut,
+  Building2, Users, FolderKanban, Wallet, Settings, LogOut, ChartNoAxesCombined, ListTodo,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -26,17 +26,25 @@ const groups: { label: string; items: Item[] }[] = [
     ],
   },
   {
-    label: "Planejado",
+    label: "Operação comercial",
     items: [
-      { title: "CRM", icon: Users, to: "/admin/em-breve/$modulo", params: { modulo: "crm" }, planned: true },
-      { title: "Clientes e Projetos", icon: FolderKanban, to: "/admin/em-breve/$modulo", params: { modulo: "clientes" }, planned: true },
-      { title: "Financeiro", icon: Wallet, to: "/admin/em-breve/$modulo", params: { modulo: "financeiro" }, planned: true },
+      { title: "CRM e oportunidades", icon: Users, to: "/admin/em-breve/$modulo", params: { modulo: "crm" } },
+      { title: "Atividades e follow-ups", icon: ListTodo, to: "/admin/em-breve/$modulo", params: { modulo: "atividades" } },
+      { title: "Propostas comerciais", icon: FileText, to: "/admin/em-breve/$modulo", params: { modulo: "propostas" } },
+    ],
+  },
+  {
+    label: "Gestão e inteligência",
+    items: [
+      { title: "Clientes e projetos", icon: FolderKanban, to: "/admin/em-breve/$modulo", params: { modulo: "clientes" } },
+      { title: "Financeiro", icon: Wallet, to: "/admin/em-breve/$modulo", params: { modulo: "financeiro" } },
+      { title: "Indicadores", icon: ChartNoAxesCombined, to: "/admin/em-breve/$modulo", params: { modulo: "indicadores" } },
     ],
   },
   { label: "Configurações", items: [{ title: "Configurações", icon: Settings, to: "/admin/configuracoes" }] },
 ];
 
-export function AdminSidebar({ email, onSignOut }: { email: string; onSignOut: () => void }) {
+export function AdminSidebar({ email, onSignOut }: { email: string; onSignOut?: () => void }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const loc = useRouterState({ select: (r) => ({ path: r.location.pathname, search: r.location.search as Record<string, unknown> }) });
@@ -85,14 +93,19 @@ export function AdminSidebar({ email, onSignOut }: { email: string; onSignOut: (
       </SidebarContent>
       <SidebarFooter>
         {!collapsed && <p className="truncate px-2 text-xs text-muted-foreground">{email}</p>}
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={onSignOut} tooltip="Sair">
-              <LogOut className="h-4 w-4" />
-              {!collapsed && <span>Sair</span>}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        {onSignOut && (
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={onSignOut} tooltip="Sair">
+                <LogOut className="h-4 w-4" />
+                {!collapsed && <span>Sair</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
+        {!onSignOut && !collapsed && (
+          <p className="px-2 pb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Acesso temporário</p>
+        )}
       </SidebarFooter>
     </Sidebar>
   );
