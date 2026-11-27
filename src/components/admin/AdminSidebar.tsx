@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, PlusCircle, History, Timer, CheckCircle2, FileText, ListTree,
-  Building2, Users, FolderKanban, Wallet, Settings, LogOut,
+  Building2, Users, FolderKanban, Wallet, Settings, LogOut, ChartNoAxesCombined, ListTodo,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -26,11 +26,19 @@ const groups: { label: string; items: Item[] }[] = [
     ],
   },
   {
-    label: "Planejado",
+    label: "Operação comercial",
     items: [
-      { title: "CRM", icon: Users, to: "/admin/em-breve/$modulo", params: { modulo: "crm" }, planned: true },
-      { title: "Clientes e Projetos", icon: FolderKanban, to: "/admin/em-breve/$modulo", params: { modulo: "clientes" }, planned: true },
-      { title: "Financeiro", icon: Wallet, to: "/admin/em-breve/$modulo", params: { modulo: "financeiro" }, planned: true },
+      { title: "CRM e oportunidades", icon: Users, to: "/admin/em-breve/$modulo", params: { modulo: "crm" } },
+      { title: "Atividades e follow-ups", icon: ListTodo, to: "/admin/em-breve/$modulo", params: { modulo: "atividades" } },
+      { title: "Propostas comerciais", icon: FileText, to: "/admin/em-breve/$modulo", params: { modulo: "propostas" } },
+    ],
+  },
+  {
+    label: "Gestão e inteligência",
+    items: [
+      { title: "Clientes e projetos", icon: FolderKanban, to: "/admin/em-breve/$modulo", params: { modulo: "clientes" } },
+      { title: "Financeiro", icon: Wallet, to: "/admin/em-breve/$modulo", params: { modulo: "financeiro" } },
+      { title: "Indicadores", icon: ChartNoAxesCombined, to: "/admin/em-breve/$modulo", params: { modulo: "indicadores" } },
     ],
   },
   { label: "Configurações", items: [{ title: "Configurações", icon: Settings, to: "/admin/configuracoes" }] },
