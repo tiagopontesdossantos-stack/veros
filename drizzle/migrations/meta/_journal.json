@@ -43,6 +43,13 @@
       "when": 1795792858843,
       "tag": "0005_workspace_modules",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795792895617,
+      "tag": "0006_seed_veros_crm_pipeline",
+      "breakpoints": true
     }
   ]
 }
