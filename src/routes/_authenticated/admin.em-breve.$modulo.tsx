@@ -138,6 +138,7 @@ function ProjectsModule() {
   const org = useInternalOrganization();
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
+  const [clientName, setClientName] = useState("");
   const [service, setService] = useState("revops_diagnostic");
   const q = useQuery({
     queryKey: ["workspace-projects", org.data?.id],
@@ -152,6 +153,19 @@ function ProjectsModule() {
       return { projects: projects.data, clients: clients.data };
     },
   });
+  const createClient = useMutation({
+    mutationFn: async (e: FormEvent) => {
+      e.preventDefault();
+      const cleanName = clientName.trim();
+      if (!cleanName) throw new Error("Informe o nome do cliente.");
+      const slug = cleanName.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const { data, error } = await supabase.from("organizations").insert({ name: cleanName, slug, organization_type: "client" }).select("id").single();
+      if (error) throw error;
+      return data.id;
+    },
+    onSuccess: (id) => { setClientName(""); setClientId(id); qc.invalidateQueries({ queryKey: ["workspace-projects"] }); toast.success("Organização cliente criada."); },
+    onError: (e) => toast.error(e.message || "Não foi possível cadastrar o cliente."),
+  });
   const create = useMutation({
     mutationFn: async (e: FormEvent) => {
       e.preventDefault();
@@ -165,6 +179,10 @@ function ProjectsModule() {
   if (q.isLoading || org.isLoading) return <Loading />;
   if (q.isError || !q.data) return <Empty title="Projetos aguardando dados" detail="Aplique a migration 0005 e cadastre as organizações dos clientes para iniciar projetos." />;
   return <div className="space-y-4">
+    <form onSubmit={(e) => createClient.mutate(e)} className="grid gap-3 rounded-xl border bg-card p-4 md:grid-cols-[1fr_auto] md:items-end">
+      <div className="space-y-1"><Label htmlFor="new-client">Cadastrar organização cliente</Label><Input id="new-client" value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="Nome da empresa cliente" required /></div>
+      <Button type="submit" variant="outline" disabled={createClient.isPending || !clientName.trim()}><Plus className="mr-1 h-4 w-4" />Cadastrar cliente</Button>
+    </form>
     <form onSubmit={(e) => create.mutate(e)} className="grid gap-3 rounded-xl border bg-card p-4 md:grid-cols-[1fr_1fr_1fr_auto] md:items-end">
       <div className="space-y-1"><Label htmlFor="project-name">Nome do projeto</Label><Input id="project-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Diagnóstico RevOps — Cliente" required /></div>
       <div className="space-y-1"><Label htmlFor="project-client">Organização cliente</Label><select id="project-client" value={clientId} onChange={(e) => setClientId(e.target.value)} className="h-9 w-full rounded-md border bg-background px-3 text-sm"><option value="">Selecione</option>{q.data.clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
